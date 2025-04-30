@@ -48,15 +48,13 @@ function addInputListeners() {
         });
 
         input.addEventListener("keydown", (e) => {
-            const currentIndex = index;
-
-            if (e.key === "ArrowRight" && inputs[currentIndex + 1]) {
-                inputs[currentIndex + 1].focus();
-            } else if (e.key === "ArrowLeft" && inputs[currentIndex - 1]) {
-                inputs[currentIndex - 1].focus();
+            if (e.key === "ArrowRight" && inputs[index + 1]) {
+                inputs[index + 1].focus();
+            } else if (e.key === "ArrowLeft" && inputs[index - 1]) {
+                inputs[index - 1].focus();
             } else if (e.key === "Backspace") {
-                inputs[currentIndex].value = "";
-                if (currentIndex > 0) inputs[currentIndex - 1].focus();
+                inputs[index].value = "";
+                if (index > 0) inputs[index - 1].focus();
             }
         });
     });
@@ -64,7 +62,6 @@ function addInputListeners() {
 
 document.getElementById("check-btn").addEventListener("click", () => {
     const inputs = document.querySelectorAll(`.try-${counterTry} input`);
-    let userWord = "";
     let win = true;
 
     for (let i = 0; i < numberLetters; i++) {
@@ -80,8 +77,6 @@ document.getElementById("check-btn").addEventListener("click", () => {
             return;
         }
 
-        userWord += userLetter;
-
         if (userLetter === correctLetter) {
             input.classList.add("true-true");
         } else if (gussWord.includes(userLetter)) {
@@ -93,14 +88,14 @@ document.getElementById("check-btn").addEventListener("click", () => {
         }
     }
 
-    if (userWord === gussWord) {
+    if (win) {
         displayWord.innerHTML = `<p class="text-center fw-bold h4 text-success">Word is correct! You WIN!</p>`;
         document.getElementById("check-btn").disabled = true;
         document.getElementById("hint").disabled = true;
         return;
     }
 
-    // If not last try, enable next row
+    // Move to next try
     counterTry++;
     if (counterTry > numberTry) {
         displayWord.innerHTML = `<p class="text-center fw-bold h4 text-danger">Game Over! The word was: ${gussWord}</p>`;
@@ -144,11 +139,11 @@ hintBtn.addEventListener("click", () => {
 
     numberOfHint--;
     hintSpan.innerHTML = `(${numberOfHint})`;
+
     if (numberOfHint === 0) {
         hintBtn.disabled = true;
     }
 
-    // Focus next available input
     const nextInput = Array.from(inputs).find(input => !input.disabled && input.value === "");
     nextInput?.focus();
 });
