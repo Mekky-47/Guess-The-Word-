@@ -1,169 +1,160 @@
-let numberTry = 6
-let numberLetters = 6
-let counterTry = 1
-//Words list
+let numberTry = 6;
+let numberLetters = 6;
+let counterTry = 1;
+
+// Word list
 let gussWord = "";
-let words = ["hassan","Delete","shcool","create","Driver","Domain","Couple"]
-gussWord = words[Math.floor(Math.random() * words.length)].toUpperCase()
+let words = ["hassan", "delete", "shcool", "create", "driver", "domain", "couple"];
+gussWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
 console.log(gussWord);
 console.log(counterTry);
 
+// Display message
+const displayWord = document.getElementById("display");
 
-//display word
-const displayWord = document.getElementById("display")
-
+// Generate input fields
 function generateInputs() {
-    const inputContainer = document.querySelector(".inputs")
+    const inputContainer = document.querySelector(".inputs");
 
-    //create div
-    for (let i = 1; i <= numberTry ; i++) {
-        const tryDiv=document.createElement("div")
-        tryDiv.classList.add(`try-${i}`)
-        tryDiv.classList.add(`d-flex`,`gap-2`,`align-items-center`)
-        tryDiv.innerHTML +=`<span class="me-2" >Try ${i}</span>`
-        if( i !== counterTry) tryDiv.classList.add("disabled")
+    for (let i = 1; i <= numberTry; i++) {
+        const tryDiv = document.createElement("div");
+        tryDiv.classList.add(`try-${i}`, "d-flex", "gap-2", "align-items-center");
+        tryDiv.innerHTML += `<span class="me-2">Try ${i}</span>`;
+        if (i !== counterTry) tryDiv.classList.add("disabled");
 
-        // create input
-        for (let j = 1; j <= numberLetters ; j++) {
-            const inputLetter = document.createElement(`input`)
-            inputLetter.type="text";
-            inputLetter.setAttribute("maxlength","1")
-            
-            inputLetter.style.width="40px"
-            tryDiv.appendChild(inputLetter)
+        for (let j = 1; j <= numberLetters; j++) {
+            const inputLetter = document.createElement("input");
+            inputLetter.type = "text";
+            inputLetter.setAttribute("maxlength", "1");
+            inputLetter.style.width = "40px";
+            tryDiv.appendChild(inputLetter);
         }
-        inputContainer.appendChild(tryDiv)
-        inputContainer.children[0].children[1].focus()    
+
+        inputContainer.appendChild(tryDiv);
     }
-    const inputsDisabled=document.querySelectorAll(".disabled input")
-    inputsDisabled.forEach((input)  => (input.disabled = true))
-    const inputs = document.querySelectorAll("input")
-    inputs.forEach((input , index)=>{
-        
-        input.addEventListener("input",(e)=>{
-            //index of letter
-            
-            const currentIndex = Array.from(inputs).indexOf(e.target)
-            
-            input.value= input.value.toUpperCase()
-            console.log(index);
-            const nextInput = inputs[index+1]
-            if (nextInput) nextInput.focus()
 
-        })
-        input.addEventListener("keydown",(e)=>{
-            const currentIndex = Array.from(inputs).indexOf(e.target)
-                if(e.key=="ArrowRight"){
-                    const nextInput = currentIndex + 1
-                    if(nextInput < inputs.length) inputs[nextInput].focus()
-                };
-                if(e.key=="ArrowLeft"){
-                    const backInput = currentIndex - 1
-                    if(backInput <= inputs.length && backInput >= 0) inputs[backInput].focus()
-                };
-                if (e.key=="Backspace") {
-                    inputs[currentIndex].value=""
-                    
-                }
-                
-        })
-        
-    })
-}
-const check =document.getElementById("check-btn")
-check.addEventListener("click" , (checkWord) =>{
-    let flag = true
-    for (let i = 0; i < numberLetters; i++) {
-            const inputs = document.querySelectorAll(`.try-${counterTry} input`)
-            const letters =   inputs[i].value
-            lettersTrue = gussWord[i]
-            if (letters=="") {
-                displayWord.innerHTML = ` <p class="text-center fw-bold h4 text-danger"> Please Enter Letters</p>`
-                inputs[i].classList.add("false")
-                console.log("false");
-                flag = false;
-            }
-            else if (lettersTrue == letters && inputs[i].valuey !== "") {
-                displayWord.innerHTML = ` <p class="text-center fw-bold h4 text-danger"> Word Is Correct You WIN</p>`
-                inputs[i].classList.remove("false")
-                inputs[i].classList.remove("true-false")
-                inputs[i].classList.add("true-true")
-                console.log("true-true");
-                // check.disabled = true
-                flag = true;
+    document.querySelectorAll(".disabled input").forEach(input => input.disabled = true);
+    document.querySelector(`.try-${counterTry} input`)?.focus();
 
-            }else if (gussWord.includes(letters)) {
-                displayWord.innerHTML = ` <p class="text-center fw-bold h3 text-danger"> Game Over</p>`
-                inputs[i].classList.remove("false")
-                inputs[i].classList.remove("true-true")
-                inputs[i].classList.add("true-false")
-                console.log("true-false");
-                flag = false;
-            }
-            else{
-                inputs[i].classList.add("false")
-                console.log("false");
-        }
-    }
-    if (flag == false) {
+    const inputs = document.querySelectorAll("input");
 
-        //disable inputs
-        const inputs = document.querySelectorAll(`.try-${counterTry} input`)
-        inputs.forEach((input) => {
-            input.classList.add("disabled")
-            input.disabled = true
+    inputs.forEach((input, index) => {
+        input.addEventListener("input", (e) => {
+            input.value = input.value.toUpperCase();
+            const nextInput = inputs[index + 1];
+            if (nextInput) nextInput.focus();
         });
 
-        counterTry++ ;
-
-        //enable next try
-        const nextTry = document.querySelector(`.try-${counterTry}`)
-        const nextInputs = document.querySelectorAll(`.try-${counterTry} input`)
-        nextInputs.forEach((input)=> {
-            input.disabled = false
-        })
-        const el = document.querySelector(`.try-${counterTry}`)
-        if (el) {
-            document.querySelector(`.try-${counterTry}`).classList.remove("disabled")
-            el.children[1].focus()
-        }else{
-            displayWord.innerHTML = ` <p class="text-center fw-bold h3 text-danger"> Game Over</p>`
-            check.disabled = true
-        }
-
-    }
-
-})   
-
-const hint = document.getElementById("hint")
-let numberOfHint = 2 ;
-const hintSpan = document.querySelector("#hint span")
-hintSpan.innerHTML=`(${numberOfHint})`
-const enableInput = document.querySelectorAll(`input:not([disabled])`)
-hint.addEventListener("click",(addHint)=>{
-    if(numberOfHint > 0){
-        hintSpan.innerHTML=`(${--numberOfHint})`
-        
-        const inputs = document.querySelectorAll(`.try-${counterTry} input`)
-        const randomIndex = Math.floor(Math.random() * numberLetters)
-        const randomLetter = gussWord[randomIndex]
-        inputs[randomIndex].value = randomLetter
-        inputs[randomIndex].disabled = true
-        inputs[randomIndex].classList.add("hint")
-        if (inputs[randomIndex-1].value=="") {
-            inputs[0].focus()
-            
-        }else{
-            inputs[randomIndex-1].focus()
-        }
-    }else{
-        hint.disabled = true
-    }
-    
-
-
-})
-window.onload = ()=>{
-    
-    generateInputs()
+        input.addEventListener("keydown", (e) => {
+            const currentIndex = Array.from(inputs).indexOf(e.target);
+            if (e.key === "ArrowRight") {
+                const nextInput = inputs[currentIndex + 1];
+                if (nextInput) nextInput.focus();
+            } else if (e.key === "ArrowLeft") {
+                const backInput = inputs[currentIndex - 1];
+                if (backInput) backInput.focus();
+            } else if (e.key === "Backspace") {
+                inputs[currentIndex].value = "";
+            }
+        });
+    });
 }
+
+// Check button logic
+const check = document.getElementById("check-btn");
+check.addEventListener("click", () => {
+    const inputs = document.querySelectorAll(`.try-${counterTry} input`);
+    let flag = true;
+    let correctLetters = 0;
+
+    for (let i = 0; i < numberLetters; i++) {
+        const letter = inputs[i].value.toUpperCase();
+        const correctLetter = gussWord[i];
+
+        if (letter === "") {
+            inputs[i].classList.add("false");
+            displayWord.innerHTML = `<p class="text-center fw-bold h4 text-danger">Please enter all letters</p>`;
+            flag = false;
+        } else if (letter === correctLetter) {
+            inputs[i].classList.remove("false", "true-false");
+            inputs[i].classList.add("true-true");
+            correctLetters++;
+        } else if (gussWord.includes(letter)) {
+            inputs[i].classList.remove("false", "true-true");
+            inputs[i].classList.add("true-false");
+            flag = false;
+        } else {
+            inputs[i].classList.add("false");
+            flag = false;
+        }
+    }
+
+    if (correctLetters === numberLetters) {
+        displayWord.innerHTML = `<p class="text-center fw-bold h4 text-success">Word is correct! You WIN!</p>`;
+        check.disabled = true;
+        return;
+    }
+
+    if (!flag) {
+        // Disable current inputs
+        inputs.forEach((input) => {
+            input.classList.add("disabled");
+            input.disabled = true;
+        });
+
+        counterTry++;
+
+        // Check if more tries are available
+        const nextTry = document.querySelector(`.try-${counterTry}`);
+        if (nextTry) {
+            nextTry.classList.remove("disabled");
+            const nextInputs = document.querySelectorAll(`.try-${counterTry} input`);
+            nextInputs.forEach((input) => input.disabled = false);
+            nextInputs[0]?.focus();
+        } else {
+            displayWord.innerHTML = `<p class="text-center fw-bold h3 text-danger">Game Over</p>`;
+            check.disabled = true;
+        }
+    }
+});
+
+// Hint logic
+const hint = document.getElementById("hint");
+let numberOfHint = 2;
+const hintSpan = document.querySelector("#hint span");
+hintSpan.innerHTML = `(${numberOfHint})`;
+
+hint.addEventListener("click", () => {
+    if (numberOfHint <= 0) {
+        hint.disabled = true;
+        return;
+    }
+
+    const inputs = document.querySelectorAll(`.try-${counterTry} input`);
+    const emptyIndexes = Array.from(inputs)
+        .map((input, idx) => input.value === "" ? idx : null)
+        .filter(index => index !== null);
+
+    if (emptyIndexes.length > 0) {
+        const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+        inputs[randomIndex].value = gussWord[randomIndex];
+        inputs[randomIndex].disabled = true;
+        inputs[randomIndex].classList.add("hint");
+
+        // Focus next empty input
+        const nextEmpty = Array.from(inputs).find(input => !input.disabled && input.value === "");
+        nextEmpty?.focus();
+
+        numberOfHint--;
+        hintSpan.innerHTML = `(${numberOfHint})`;
+    }
+
+    if (numberOfHint <= 0) {
+        hint.disabled = true;
+    }
+});
+
+// Run game on load
+window.onload = () => {
+    generateInputs();
+};
